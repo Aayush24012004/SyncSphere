@@ -1,1 +1,1 @@
-# SyncSphere
+# SyncSpher
