@@ -11,11 +11,16 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    password: {
+    gender: {
       type: String,
       required: true,
     },
-    minlength: 6,
+    password: {
+      type: String,
+      required: true,
+      minlength: 6,
+    },
+
     bio: {
       type: String,
       default: "",
@@ -49,8 +54,6 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-//preHook
-const User = mongoose.model("User", userSchema);
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   try {
@@ -61,4 +64,14 @@ userSchema.pre("save", async function (next) {
     next(error);
   }
 });
+userSchema.methods.matchPass = async function (enteredPassword) {
+  const isPasswordCorrect = await bcrypt.compare(
+    enteredPassword,
+    this.password
+  );
+  return isPasswordCorrect;
+};
+//preHook
+const User = mongoose.model("User", userSchema);
+
 export default User;
